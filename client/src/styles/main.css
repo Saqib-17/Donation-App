@@ -39,7 +39,9 @@ html, body {
   box-sizing: border-box;
   background-color: antiquewhite;
 }
-
+.credit{
+  align-items: center;
+}
 /* Center (logo + title) */
 .navbar-center-absolute {
   position: absolute;
@@ -115,12 +117,15 @@ html, body {
   display: flex;
   justify-content: center;
   padding: 3rem 0;
+  margin-top: 5rem;
+
 }
 
 .hero-content {
   display: flex;
   width: 100%;
   max-width: 1200px;
+ 
 
 }
 
@@ -257,6 +262,45 @@ footer {
   width: 100%;
   box-sizing: border-box;
 }
+/* Fix navbar and vertical alignment */
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+/* 2. Fix vertical alignment */
+.navbar {
+  display: flex;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+/* Optional: Add padding to body to prevent overlap */
+body {
+  padding-top: 96px; /* same as navbar height (py-6 = 1.5rem top & bottom = 96px total) */
+}
+/* Positioning and alignment for action button container */
+.action-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  position: fixed;
+  top: 96px; /* Exactly below navbar. Adjust if your navbar height differs */
+  left: 0;
+  width: 100%;
+
+  z-index: 999;
+  background-color: var(--secondary-color);
+  padding: 1rem 0;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 
 
 /* ========== MOBILE RESPONSIVENESS ========== */
@@ -381,7 +425,7 @@ footer {
     justify-content: center;
     z-index: 1000;
   }
-  
+
   .custom-modal-box {
     background-color: white;
     padding: 2.5rem 2rem;
@@ -424,6 +468,10 @@ footer {
   
   .custom-modal-btn:hover {
     background-color: #ddd;
+  }
+  .hero {
+   
+    padding-top: 50px;
   }
 }
 

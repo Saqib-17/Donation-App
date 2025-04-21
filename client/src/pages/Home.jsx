@@ -119,7 +119,7 @@ const Home = () => {
                   className="input input-bordered w-full max-w-xs"
                 />
                 <button
-                  className="btn btn-ghost text-xl font-semibold bg-primary-color text-white"
+                  className="btn btn-ghost text-xl font-semibold bg-primary-color text-white dtn-button  "
                   onClick={(e) => handleDonate(e, id, `donation-input-${id}`)}
                 >
                   Donate Now
