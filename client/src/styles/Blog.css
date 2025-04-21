@@ -1,0 +1,14 @@
+.blog-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full screen height */
+    text-align: center;
+  }
+  
+  .blog-message {
+    font-size: 2rem;
+    font-weight: normal;
+    color: var(--dark-3); /* Make sure this variable exists */
+  }
+  
