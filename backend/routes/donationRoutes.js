@@ -1,26 +1,42 @@
+// backend/routes/donationRoutes.js
+
 const express = require('express');
 const router = express.Router();
-const Donation = require('../models/Donation');
+const Donation = require('../models/donation');
 
-// POST /donate
+// POST: Create a new donation
 router.post('/donate', async (req, res) => {
   try {
-    const { cause, amount } = req.body;
-    const newDonation = new Donation({ cause, amount });
-    await newDonation.save();
-    res.status(201).json({ message: 'Donation saved!' });
+    const { causeId, causeName, amount } = req.body;
+
+    if (!causeId || !causeName || !amount) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    const donation = new Donation({
+      causeId,
+      causeName,
+      amount,
+    });
+
+    await donation.save();
+    console.log('🔔 Donation saved:', donation);
+
+    res.status(201).json({ message: '✅ Donation saved successfully!', donation });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to save donation' });
+    console.error('❌ Error saving donation:', err.message);
+    res.status(500).json({ message: '❌ Error saving donation', error: err.message });
   }
 });
 
-// GET /history
-router.get('/history', async (req, res) => {
+// GET: Fetch all donation history
+router.get('/donations', async (req, res) => {
   try {
-    const donations = await Donation.find().sort({ date: -1 });
-    res.json(donations);
+    const donations = await Donation.find().sort({ createdAt: -1 });
+    res.status(200).json(donations);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch history' });
+    console.error('❌ Error fetching donations:', err.message);
+    res.status(500).json({ message: '❌ Error fetching donations', error: err.message });
   }
 });
 

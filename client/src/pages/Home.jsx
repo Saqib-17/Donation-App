@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import noakhali from '../assets/noakhali.png';
 import feni from '../assets/feni.png';
 import quota from '../assets/quota-protest.png';
@@ -38,23 +39,23 @@ const Home = () => {
 
   const [modalInfo, setModalInfo] = useState({ isVisible: false, position: null });
 
-  const handleDonate = (e, id, inputId) => {
+  const handleDonate = async (e, id, inputId) => {
     const input = document.getElementById(inputId);
     const donationAmount = parseFloat(input.value);
-
+  
     if (isNaN(donationAmount) || donationAmount <= 0) {
       alert("Please enter a valid donation amount.");
       return;
     }
-
+  
     const mainBalanceElement = document.getElementById("cash-out-btn");
     const currentMainBalance = parseFloat(mainBalanceElement.innerText);
-
+  
     if (donationAmount > currentMainBalance) {
       alert("You don't have enough balance!");
       return;
     }
-
+  
     // Update card's balance
     setDonations((prev) =>
       prev.map((donation) =>
@@ -63,22 +64,31 @@ const Home = () => {
           : donation
       )
     );
-
+  
     // Update main balance
     const newMainBalance = currentMainBalance - donationAmount;
     mainBalanceElement.innerText = `${newMainBalance} BDT`;
-
-    // Show modal at button position
-    const rect = e.target.getBoundingClientRect();
-    const position = {
-      top: rect.top + window.scrollY,
-      left: rect.left + rect.width / 2,
-    };
-    setModalInfo({ isVisible: true, position });
-
+  
+    // Show modal in center
+    setModalInfo({ isVisible: true, position: null });
+  
+    // ✅ Save donation to MongoDB with correct keys
+    try {
+      const { place } = donations.find((donation) => donation.id === id);
+      await axios.post('http://localhost:5000/api/donate', {
+        causeId: id,
+        causeName: place,
+        amount: donationAmount
+      });
+      console.log('✅ Donation saved to database');
+    } catch (err) {
+      console.error('❌ Error saving donation:', err);
+    }
+  
     // Clear input
     input.value = "";
   };
+  
 
   const closeModal = () => {
     setModalInfo({ isVisible: false, position: null });
@@ -88,7 +98,7 @@ const Home = () => {
     <>
       {donations.map(({ id, image, place, description, defaultAmount, balance }) => (
         <div className="hero" key={id}>
-          <div className="hero-content flex flex-col lg:flex-row items-center gap-6 lg:gap-10 px-4 lg:px-8">
+          <div className="hero-content flex flex-col lg:flex-row items-center gap-6 lg:gap-10 px-4 lg:px-8 py-6">
             <div className="hero-image flex-shrink-0">
               <img src={image} alt={place} className="rounded-lg w-full max-w-md" />
             </div>
@@ -101,14 +111,15 @@ const Home = () => {
                 Donate for <span>{place}</span>, Bangladesh
               </h1>
               <p className="py-2 text-base font-light text-dark-3 mb-4">{description}</p>
-              <div className="donation-form">
+              <div className="donation-form flex items-center gap-3">
                 <input
                   type="text"
                   id={`donation-input-${id}`}
                   placeholder="Write Donation Amount"
+                  className="input input-bordered w-full max-w-xs"
                 />
                 <button
-                  className="btn btn-ghost text-xl font-semibold bg-primary-color"
+                  className="btn btn-ghost text-xl font-semibold bg-primary-color text-white"
                   onClick={(e) => handleDonate(e, id, `donation-input-${id}`)}
                 >
                   Donate Now
